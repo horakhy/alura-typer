@@ -5,6 +5,7 @@ $(document).ready(function () { /* Calls these functions as soon as the page is 
     updateSentence();
     startCounters();
     startChronometer();
+    startMarkers();
     $("#botao-reiniciar").click(restartGame);
 });
 
@@ -38,35 +39,41 @@ function startChronometer() {
             tempoRestante--;
             $("#tempo-digitacao").text(tempoRestante);
             if (tempoRestante <= 0) {
-                campo.attr("disabled", true);
                 clearInterval(cronometroID);
-                campo.toggleClass("campo-desativado");
-
-                $("#botao-reiniciar").attr("disabled", false);
+                endGame();
             }
         }, 1000);
     });
 }
 
-var frase = $(".frase").text();
-campo.on("input", function(){
-    var digitado = campo.val();
-    var comparavel = frase.substr(0, digitado.length); // Stores only the part of the sentence that should be already written by the user
-    
-    console.log(digitado);
-    if(comparavel == digitado){
-        campo.addClass("borda-verde");
-        campo.removeClass("borda-vermelha");
-    }
-    else{
-        campo.addClass("borda-vermelha");
-        campo.removeClass("borda-verde");
-    }
-    
-});
+function endGame(){
+    campo.attr("disabled", true);
+                campo.toggleClass("campo-desativado");
+                $("#botao-reiniciar").attr("disabled", false);
+                addToScoreboard();
+}
+
+function startMarkers() {
+    var frase = $(".frase").text();
+    campo.on("input", function () {
+        var digitado = campo.val();
+        var comparavel = frase.substr(0, digitado.length); // Stores only the part of the sentence that should be already written by the user
+
+        //console.log(digitado);
+        if (comparavel == digitado) {
+            campo.addClass("borda-verde");
+            campo.removeClass("borda-vermelha");
+        }
+        else {
+            campo.addClass("borda-vermelha");
+            campo.removeClass("borda-verde");
+        }
+    });
+}
+
 
 function restartGame() {
-    campo.toggleClass("campo-desativado"); // Turn on or off the Class
+    campo.toggleClass("campo-desativado"); // Turn on or  off the Class
     campo.removeClass("borda-verde");
     campo.removeClass("borda-vermelha");
 
@@ -77,6 +84,8 @@ function restartGame() {
     $("#tempo-digitacao").text(tempoInicial);
     startChronometer();
 }
+
+
 
 
 
